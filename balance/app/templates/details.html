@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="l-main">
+    <div class="content-wrapper content-wrapper--with-bg">
+      <h1 class="page-title">Details</h1>
+      <div class="container">
+        <div class="row">
+          <a href="{% url 'income' %}" style="color:white;text-decoration:none;"><div class="col">
+            <h4 class="head" style="color:white;">INCOME</h4>
+            <p class="amt">{{ tot }}</p></a>
+          </div>
+          <a href="{% url 'expense' %}" style="color:white;text-decoration:none;"><div class="col" style="background-color: white;border: 2px solid white;color: black;">
+            <h4 class="head">EXPENSES</h4>
+            <p class="amt" style="color: black;">{{ total }}</p></a>
+          </div>
+            <a href="{% url 'employee' %}" style="color:white;text-decoration:none;"><div class="col">
+            <h4 class="head m-5" style="color:white;">Employee</h4>
+            <p class="amt" style="color: black;">{{ tota }}</p></a>
+          </div>
+        </div>
+      </div>
+    </div>
+</main>
+{% endblock %}

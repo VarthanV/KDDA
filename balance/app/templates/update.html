@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container" style="margin-top:8%;">
+  <h2 class="text-center">UPDATE INCOME</h2>
+  <div class="card">
+    <div class="card-body" style="border:2px solid black">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="form-group col-md-4 mb-3 md-form">
+            <label for="Incomename">Income Name</label>
+            <input type="text" class="form-control" id="exampleInputEmail1" value="{{incname}}" aria-describedby="emailHelp" placeholder="Enter Income Name" name="incname" required>
+          </div>
+          <div class="form-group ml-2 col-md-4 mb-3 md-form">
+            <label for="Incomedate">Income Date</label>
+            <input id="datepicker" type="date" class="form-control"  placeholder="Enter Date" name="incdate" value="{{incdate|date:'Y-m-d' }}" required>
+          </div>
+          <script>
+              $('#datepicker').datepicker({
+                  uiLibrary: 'bootstrap4'
+              });
+          </script>
+          <div class="form-group ml-3 col-md-3 mb-2 md-form">
+            <label for="exampleInputEmail1">Income  By</label>
+            <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Income By" name="incby" value="{{incby}}" required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-md-4 mb-3 md-form">
+            <label for="exampleFormControlSelect1">Income Mode</label>
+            <select class="form-control" id="exampleFormControlSelect1" name="incmode" value={{incmode}}>
+              <option>Cash</option>
+              <option>Cheque</option>
+              <option>Demand Draft</option>
+            </select>
+        </div>
+          <div class="form-group ml-1 col-md-4 mb-3 md-form">
+            <label for="exampleInputEmail1">Income Amount</label>
+            <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Income Amount" name="incamt" value="{{incamt}}" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Income Reason</label>
+          <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Income Reason" name="increason" value="{{increason}}" required>
+        </div>
+          <h3 class="text-center">-----------Bank Details----------</h3>
+          <div class="form-row">
+            <div class="form-group col-md-4 mb-3 md-form">
+              <label for="exampleInputEmail1">Bank Name </label>
+              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Bank Name" name="bankname" value="{{bankname}}" required>
+            </div>
+            <div class="form-group col-md-4 mb-3 md-form">
+              <label for="exampleInputEmail1">Checque or DD.no</label>
+              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Cheque or DD.No" name="chequeordd" value="{{chequeordd}}" required>
+            </div>
+            <div class="form-group ml-2  ml-3 col-md-3 mb-2 md-form">
+              <label for="Incomedate">Date From Bank</label>
+              <input id="datepicker" type="date" class="form-control"  placeholder="Enter Date" name="dateinbank" value="{{dateinbank|date:'Y-m-d' }}" required>
+            </div>
+            <script>
+                $('#datepicker').datepicker({
+                    uiLibrary: 'bootstrap4'
+                });
+            </script>
+          </div>
+          <input type="submit" class="btn btn-success" value="Submit">
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

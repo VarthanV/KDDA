@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html class=''>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css'><link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'><link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css'>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+    <script src='https://use.fontawesome.com/2188c74ac9.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js'></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+</head>
+<body class="sidebar-is-reduced">
+  <header class="l-header" style="box-shadow: 0 15px 10px #777;">
+    <div class="l-header__inner clearfix">
+      <div class="c-header-icon js-hamburger">
+        <div class="hamburger-toggle"><span class="bar-top"></span><span class="bar-mid"></span><span class="bar-bot"></span></div>
+      </div>
+      <div class="c-search">
+        <input class="c-search__input u-input" placeholder="Search..." type="text"/>
+      </div>
+      <div class="header-icons-group">
+        <div class="c-header-icon basket"><span class="c-badge c-badge--header-icon animated shake">0</span><i class="fa fa-envelope-o" aria-hidden="true"></i></div>
+        <div class="c-header-icon logout">
+          {% if user.is_authenticated %}
+          <a href="{% url 'logout' %}" class="nav-item nav-link">
+          <i class="fa fa-power-off"></i></a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+  <div class="l-sidebar" style="box-shadow: 0 15px 10px #777;">
+    <div class="logo">
+      <div class="logo__txt " style="text-align: center;"><img src="{% static 'images/association.jpeg' %}" alt="logo" width="50" height="50" style="border-radius:50%;"><span style="font-size:20px;">KDDA</span></div>
+    </div>
+    <div class="l-sidebar__content">
+      <nav class="c-menu js-menu">
+        <ul class="u-list">
+          <a href="{% url 'home' %}" style="text-decoration: none;color: white;"><li class="c-menu__item is-active" data-toggle="tooltip">
+            <div class="c-menu__item__inner"><i class="fa fa-home"></i>
+              <div class="c-menu-item__title"><span style="color: white;">Home</span></div>
+            </div>
+          </li></a>
+          <a href="{% url 'details' %}" style="text-decoration: none;color: white;"><li class="c-menu__item has-submenu" data-toggle="tooltip" title="Details">
+            <div class="c-menu__item__inner"><i class="fa fa-sticky-note" aria-hidden="true"></i>
+              <div class="c-menu-item__title"><span>Details</span></div>
+            </div>
+          </li></a>
+          <li class="c-menu__item has-submenu" data-toggle="tooltip" title="Print Report">
+            <div class="c-menu__item__inner"><i class="fa fa-print" aria-hidden="true"></i>
+              <div class="c-menu-item__title"><span><a href="#" style="text-decoration: none;color: white;">Print Report</a></span></div>
+            </div>
+          </li>
+          <li class="c-menu__item has-submenu" data-toggle="tooltip" title="Settings">
+            <div class="c-menu__item__inner"><i class="fa fa-cogs"></i>
+              <div class="c-menu-item__title"><span><a href="" style="text-decoration: none;color: white;">Settings</a></span></div>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+  {% block content %}
+
+  {% endblock %}
+</body>
+
+<script >"use strict";
+
+var Dashboard = function () {
+	var global = {
+		tooltipOptions: {
+			placement: "right"
+		},
+		menuClass: ".c-menu"
+	};
+
+	var menuChangeActive = function menuChangeActive(el) {
+		var hasSubmenu = $(el).hasClass("has-submenu");
+		$(global.menuClass + " .is-active").removeClass("is-active");
+		$(el).addClass("is-active");
+
+		// if (hasSubmenu) {
+		// 	$(el).find("ul").slideDown();
+		// }
+	};
+
+	var sidebarChangeWidth = function sidebarChangeWidth() {
+		var $menuItemsTitle = $("li .menu-item__title");
+
+		$("body").toggleClass("sidebar-is-reduced sidebar-is-expanded");
+		$(".hamburger-toggle").toggleClass("is-opened");
+
+		if ($("body").hasClass("sidebar-is-expanded")) {
+			$('[data-toggle="tooltip"]').tooltip("destroy");
+		} else {
+			$('[data-toggle="tooltip"]').tooltip(global.tooltipOptions);
+		}
+	};
+
+	return {
+		init: function init() {
+			$(".js-hamburger").on("click", sidebarChangeWidth);
+
+			$(".js-menu li").on("click", function (e) {
+				menuChangeActive(e.currentTarget);
+			});
+
+			$('[data-toggle="tooltip"]').tooltip(global.tooltipOptions);
+		}
+	};
+}();
+
+Dashboard.init();
+//# sourceURL=pen.js
+</script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+</body>
+</html>

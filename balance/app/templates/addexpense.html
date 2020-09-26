@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container" style="margin-top:8%;">
+  <a href="{% url 'expense-type' %}"><h3 style="float:right;color: blue;">Select Expene Name</h3></a>
+  <h2 class="text-center">ADD EXPENSE</h2>
+  <div class="card" style="border:3px solid darkgreen;border-radius:20px;">
+    <div class="card-body">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="form-group col-md-4 mb-3 md-form">
+            <label for="expensename">Expense Name</label>
+            {% if expensemode == 'nothing' %}
+            <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Expense Name" name="expname" required autocomplete="off"> 
+            {% else %}
+            <input type="text" class="form-control" id="exampleInputEmail1" value="{{expensemode}}" aria-describedby="emailHelp" placeholder="Enter Expense Name" name="expname" required autocomplete="off">
+            {% endif %}
+          </div>
+          <div class="form-group col-md-4 mb-3 md-form">
+            <label for="expensedate">Expene Date</label>
+            <input id="datepicker" type="date" class="form-control"  placeholder="Enter Date" name="expdate" required autocomplete="off">
+          </div>
+          <script>
+              $('#datepicker').datepicker({
+                  dateFormat: 'dd-mm-yy',
+                  uiLibrary: 'bootstrap4'
+              });
+          </script>
+          <div class="form-group col-md-4 mb-3 md-form">
+              <label for="exampleFormControlSelect1">Expense Mode</label>
+              <select class="form-control" id="exampleFormControlSelect1" name="expmode" required autocomplete="off">
+                <option>Cash</option>
+                <option>Cheque</option>
+                <option>Demand Draft</option>
+              </select>
+          </div>
+        </div>
+          <div class="form-row">
+            <div class="form-group col-md-4 mb-3 md-form">
+              <label for="exampleInputEmail1">Expense Amount</label>
+              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Expense Amount" name="amount" required autocomplete="off">
+            </div>
+            <div class="form-group col-md-4 mb-3 md-form">
+              <label for="exampleInputEmail1">Expense  By</label>
+              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Expense By" name="expby" required autocomplete="off">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Expense Reason</label>
+            <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Expense Reason" name="expreason" required autocomplete="off">
+          </div>
+          <h3 class="text-center">Bank Details</h3>
+          <div class="form-row">
+            <div class="form-group col-md-4 mb-3 md-form">
+              <label for="exampleInputEmail1">Bank Name </label>
+              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Bank Name" name="bankname" autocomplete="off">
+            </div>
+            <div class="form-group col-md-4 mb-3 md-form">
+              <label for="exampleInputEmail1">Checque or DD.no</label>
+              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Cheque or DD.No" name="chequeordd" autocomplete="off">
+            </div>
+            <div class="form-group col-md-4 mb-3 md-form">
+              <label for="expensedate">Date From Bank</label>
+              <input id="datepicker" type="date" class="form-control"  placeholder="Enter Date" name="dateinbank" autocomplete="off">
+            </div>
+            <script>
+                $('#datepicker').datepicker({
+                    dateFormat: 'dd-mm-yy',
+                    uiLibrary: 'bootstrap4'
+                });
+            </script>
+          </div>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Details </label>
+            <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Details" name="detail">
+          </div>
+        <button type="submit" class="btn btn-primary" style="float: right;">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

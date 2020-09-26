@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container" style="margin-top:8%;">
+  <div class="container">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+  </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Income type Id</th>
+                <th scope="col">Income type</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for incometype in incometypes %}
+              <tr>
+                <td>{{ incometype.typeid }}</td>
+                <td><a href="{% url 'add-income' incomemode=incometype.typename %}" style="color: black;text-decoration: none;">{{ incometype.typename }}</a></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <title>Report</title>
+    <style>
+        *{
+            color: black;
+        }
+        .table{
+            padding: 25px;
+        }
+        .header{
+            font-size: 30px;
+            color: black;
+            text-align: center;
+            padding: 5px;
+        }
+        .amt{
+            font-size: 30px;
+            color: black;
+            padding:5px;
+            text-align: center;
+        }
+        .detail{
+            font-size: 25px;
+            text-align: center;
+            padding: 5px;
+        }
+        .details{
+            font-size: 25px;
+            text-align: center;
+        }
+        .heading, .address{
+            font-size: 21px;
+            text-align: center;
+            text-decoration: underline;
+        }
+        .title{
+            text-decoration:underline;
+            font-size: 25px;
+            text-align: center;
+        }
+        .address,.topic{
+            font-size: 25px;
+            text-align: center;
+        }
+        .inctot,.exptot{
+            font-size: 25px;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-3">
+        <div class="title" style="font-size:40px;">Krishnagiri Dristict Deaf Association</div>
+        <div class="address">KDDA Auditorium 29/1,2 Titan Township H.C.F Post, Mathigiri,Hosur-635110</div>
+        <br>
+        <div class="topic">Recipits and Payments Accounts {{ date }}</div>
+        <div class="table1 mt-4" width="100%" style="display: flex; justify-content: space-between;">
+            <table width="45%" style="margin:0 auto;border-collapse: collapse;border: 1px solid black;">
+                <thead>
+                    <tr>
+                        <th class="header">Income</th>
+                        <th class="amt">Amounts</th>  
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tot in allincomes %}
+                    <tr>
+                        <td scope="row" class="detail">{{ tot.name }}</td>
+                        <td class="details">{{ tot.incamt.incamt__sum }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <table width="45%" style="margin:0 auto;border-collapse: collapse; border: 1px solid black;">
+                <thead>
+                    <tr>
+                        <th class="header">Expense</th>
+                        <th class="amt">Amounts</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in allexpenses %}
+                    <tr>
+                        <td scope="row" class="detail">{{ result.name }}</td>
+                        <td class="details">{{ result.amount.amount__sum }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col">
+                <p class="inctot" style="text-align:right;">Total Income:&#8377 {{ tot }}</p>
+            </div>
+            <div class="col mr-5" style="text-align:right;margin-right:5px;">
+                <p class="exptot mr-5">Total Expense:&#8377 {{ extot }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-5" style="margin-top:5px;">
+        <div class="row">
+            <div class="col ml-5 mt-5" style="font-size: 15px;">
+                <p class="inctot">Sign of Seceratry</p>
+            </div>
+            <div class="col mt-5" style="text-align:right;font-size:15px;">
+                <p class="exptot">Seal of Trust</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+  </body>
+</html>
