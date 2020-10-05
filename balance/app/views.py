@@ -14,11 +14,17 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.template.loader import get_template
 from django.db.models import Sum
-from django.contrib.auth import authenticate, forms
+from django.db.models.functions import Cast
+from django.db.models import FloatField
+from django.contrib.auth import authenticate,forms
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
-
-# your views
+import csv
+import datetime
+from django.template import loader
+from django.contrib.auth import user_logged_in
+from django.core.exceptions import PermissionDenied
+# create your views
 def home(request):
     incomes = Income.objects.all()
     expenses = Expense.objects.all()
@@ -54,36 +60,45 @@ def details(request):
     return render(request,'details.html',context)
     
 # income view 
-class IncomeView(View):
+class IncomeView(LoginRequiredMixin,View):
     template_name = "income.html"
+    raise_exception = True
+    permission_denied_message = 'You must Login Now.'
     def get(self,request,*args, **kwargs):
         incomes = Income.objects.all()[:6]
         total = 0
         for income in incomes:
             total += income.incamt
 
-        context = {
+        context = { 
             "incomes":incomes,
             "total":total
         }
         return render(request,self.template_name ,context)
 
 # expense view
-class ExpenseView(View):
+class ExpenseView(LoginRequiredMixin,View):
     template_name ="expense.html"
+    raise_exception = True
+    permission_denied_message = 'You must Login Now.'
     def get(self,request):
         expenses = Expense.objects.all()
         tot = 0
         for expense in expenses:
             tot += expense.amount
+
+        
+
         context = {
             "expenses":expenses,
             "tot":tot
-        }
+        }   
         return render(request,self.template_name ,context)
 
 class AddincomeView(LoginRequiredMixin,View):
     template_name = 'addincome.html'
+    raise_exception = True
+    permission_denied_message = 'You must Login Now.'
     def get(self,request,incomemode):
         context={
             'incomemode':incomemode
@@ -110,6 +125,8 @@ class AddincomeView(LoginRequiredMixin,View):
 
 class AddexpenseView(LoginRequiredMixin,View):
     template_name ="addexpense.html"
+    raise_exception = True
+    permission_denied_message = 'You must Login Now.'
     def get(self,request,expensemode):
         context={
             'expensemode':expensemode
@@ -136,6 +153,8 @@ class AddexpenseView(LoginRequiredMixin,View):
 
 class AddIncomeTypeView(View,LoginRequiredMixin):
     template_name = 'add-income-type.html'
+    raise_exception = True
+    permission_denied_message = 'You must Login Now.'
     def get(self,request):
         return render(request,self.template_name)
     def post(self,request):
@@ -150,6 +169,8 @@ class AddIncomeTypeView(View,LoginRequiredMixin):
 
 class AddExpenseTypeView(View,LoginRequiredMixin):
     template_name = 'add-expense-type.html'
+    raise_exception = True
+    permission_denied_message = 'You must Login Now.'
     def get(self,request):
         return render(request,self.template_name)
     def post(self,request):
@@ -206,7 +227,6 @@ class IncomeUpdateView(View,LoginRequiredMixin):
         income.chequeordd = data['chequeordd']
         income.dateinbank = data['dateinbank']
         income.save()
-        messages.success(request, f'Income is updated successfully!...')
         return redirect('income')
         return render(request,self.template_name)  
 
@@ -241,12 +261,13 @@ class ExpenseUpdateView(View,LoginRequiredMixin):
         expense.dateinbank = data['dateinbank']
         expense.detail = data['detail']
         expense.save()
-        messages.success(request, f'Expense is updated successfully!...')
         return redirect('expense')
         return render(request,self.template_name) 
 
 class AddEmployeView(View,LoginRequiredMixin):
     template_name = 'addemploye.html'
+    raise_exception = True
+    permission_denied_message = 'You must Login Now.'
     def get(self,request):
         return render(request,self.template_name)
     def post(self,request):
@@ -259,8 +280,7 @@ class AddEmployeView(View,LoginRequiredMixin):
         employe.phone = data['phone']
         employe.address = data['address']
         employe.save()
-        messages.success(request, f'Employee is added successfully!...')
-        return redirect("all-employe")
+        return redirect("employee")
         return render(request,self.template_name)
 
 class EmployeeView(View):
@@ -275,6 +295,37 @@ class EmployeeView(View):
         }
         return render(request,self.template_name ,context)
 
+class EmployeeUpdateView(View):
+    template_name = "update-employee.html"
+    def get(self,request,pk):
+        employee = get_object_or_404(Employee,pk=pk)
+        context = {
+            'empname':employee.empname,
+            'desination':employee.desination,
+            'desginkdda':employee.desginkdda,
+            'phone':employee.phone,
+            'address':employee.address
+        }
+        return render(request,self.template_name,context)
+
+    def post(self,request,pk):
+        employee = get_object_or_404(Employee,pk=pk)
+        data = request.POST
+        employee.empname = data['empname']
+        employee.desination = data['desination']
+        employee.desginkdda = data['desginkdda']
+        employee.phone = data['phone']
+        employee.address = data['address']
+        employee.save()
+        return redirect('employee')
+        return render(request,self.template_name)
+
+class EmployeeDeleteView(View):
+    def get(self,request,pk):
+        employe = Employee.objects.get(pk=pk)
+        employe.delete()
+        return redirect('employee')
+
 def report(request):
     incomes = Income.objects.all()
     expenses = Expense.objects.all()
@@ -287,17 +338,20 @@ def report(request):
     for expense in expenses:
         extot += expense.amount
 
-    travel = Expense.objects.filter(expname='Travel').aggregate(Sum('amount'))
+    travel = Expense.objects.filter(expname='Travel').aggregate(Sum('amount')) 
     meeting = Expense.objects.filter(expname='Meeting').aggregate(Sum('amount'))
     auditfees = Expense.objects.filter(expname='Audit Fees').aggregate(Sum('amount'))
     bankcharges = Expense.objects.filter(expname='Bankcharges').aggregate(Sum('amount'))
     servicecharges = Expense.objects.filter(expname='Servicecharges').aggregate(Sum('amount'))
     general = Expense.objects.filter(expname='General').aggregate(Sum('amount'))
     printing = Expense.objects.filter(expname='Printing').aggregate(Sum('amount'))
+    bill = Expense.objects.filter(expname='Bill').aggregate(Sum('amount'))
+    cashinhand = Expense.objects.filter(expname='Cash in Hand').aggregate(Sum('amount'))
+    cashatbank = Expense.objects.filter(expname='Cash at Bank').aggregate(Sum('amount'))
     donation = Income.objects.filter(incname='Donation').aggregate(Sum('incamt'))
     rent = Income.objects.filter(incname='Rent').aggregate(Sum('incamt'))
     intrest = Income.objects.filter(incname='Intrest Collected').aggregate(Sum('incamt'))
-    
+
     context = {
         "allexpenses":[
             {"name":"Travel","amount":travel},
@@ -307,6 +361,9 @@ def report(request):
             {"name":"Servicecharges","amount":servicecharges},
             {"name":"General","amount":general},
             {"name":"Printing","amount":printing},
+            {"name":"Bill","amount":bill},
+            {"name":"Cash in Hand","amount":cashinhand},
+            {"name":"Cash at Bank","amount":cashatbank},
         ],
         "allincomes":[
             {"name":"Donation","incamt":donation},
@@ -332,3 +389,33 @@ def expensetype(request):
         'expensetypes':ExpenseType.objects.all()
     }
     return render(request,'expense-type.html',context)
+
+def income_csv(request):
+    incomes = Income.objects.all() 
+    response = HttpResponse(content_type = 'text\csv')
+    response['content-Disposition'] = 'attachement; filename="income.csv"'
+    writer = csv.writer(response,delimiter=',')
+    writer.writerow(['IncName','Incdate','Incmode','Incamt','Increason','Incby','BankName','Cheque(or)DD','Dateinbank'])
+    for income in incomes:
+        writer.writerow([income.incname,income.incdate,income.incmode,income.incamt,income.increason,income.incby,income.bankname,income.chequeordd,income.dateinbank])
+    return response
+    
+def expense_csv(request):
+    expenses = Expense.objects.all() 
+    response = HttpResponse(content_type = 'text\csv')
+    response['content-Disposition'] = 'attachement; filename="expense.csv"'
+    writer = csv.writer(response,delimiter=',')
+    writer.writerow(['Expname','Expdate','Expmode','Amount','Expreason','Expby','Detail','BankName','Cheque(or)dd','Dateinbank'])
+    for expense in expenses:
+        writer.writerow([expense.expname,expense.expdate,expense.expmode,expense.amount,expense.expreason,expense.expby,expense.detail,expense.bankname,expense.chequeordd,expense.dateinbank])
+    return response
+
+def settings(request):
+    inc = Income.objects.filter(incdate__gte=datetime.date(2020,10,1),incdate__lte=datetime.date(2020,10,30)).all()
+    context = {
+        "incs":inc
+    }
+    return render(request,'settings.html',context)
+
+def error(request):
+    return render(request,'404.html')

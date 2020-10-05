@@ -2,8 +2,8 @@
 {% load crispy_forms_tags %}
 {% block content %}
 <div class="container" style="margin-top:8%;">
-    <a href="{% url 'income-type' %}"><h3 style="float:right;color: blue;">Select Income Name</h3></a>
-    <h2 class="text-center">ADD INCOME</h2>
+  <a href="{% url 'income-type' %}"><h3 style="float:right;color: blue;">Select Income Name</h3></a>
+  <h2 class="text-center">ADD INCOME</h2>
     <div class="card" style="border:3px solid darkgreen;border-radius:20px;">
       <div class="card-body">
         <form method="POST">
@@ -35,7 +35,7 @@
           <div class="row">
             <div class="form-group col-md-4 mb-3 md-form">
               <label for="exampleFormControlSelect1">Income Mode</label>
-              <select class="form-control" id="exampleFormControlSelect1" name="incmode" required autocomplete="off">
+              <select class="form-control" id="exampleFormControlSelect1" name="incmode" required>
                 <option>Cash</option>
                 <option>Cheque</option>
                 <option>Demand Draft</option>
@@ -54,21 +54,19 @@
             <div class="form-row">
               <div class="form-group col-md-4 mb-3 md-form">
                 <label for="exampleInputEmail1">Bank Name </label>
-                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Bank Name" name="bankname" autocomplete="off">
+                <select class="form-control" id="exampleFormControlSelect1" name="bankname" required>
+                  <option>Canara</option>
+                  <option>None</option>
+                </select>
               </div>
               <div class="form-group col-md-4 mb-3 md-form">
                 <label for="exampleInputEmail1">Checque or DD.no</label>
-                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Cheque or DD.No" name="chequeordd">
+                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Cheque or DD.No" name="chequeordd" autocomplete="off">
               </div>
               <div class="form-group ml-2  ml-3 col-md-3 mb-2 md-form">
                 <label for="Incomedate">Date From Bank</label>
-                <input id="datepicker" type="date" class="form-control"  placeholder="Enter Date" name="dateinbank" value="00-00-0000" autocomplete="off">
+                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Date" name="dateinbank" autocomplete="off">
               </div>
-              <script>
-                  $('#datepicker').datepicker({
-                      uiLibrary: 'bootstrap4'
-                  });
-              </script>
             </div>
           <button type="submit" class="btn btn-primary" style="float:right;">Submit</button>
         </form>

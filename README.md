@@ -1,2 +1,0 @@
-# KDDA
-# Work on Progeress

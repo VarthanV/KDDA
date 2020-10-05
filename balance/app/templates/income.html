@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container" style="margin-top:8%;">
+  <a class="btn btn-warning" href="{% url 'income-csv' %}">Download</a>
   <h4 class="text-center">ALL INCOMES DETAILS</h4>
   <div class="table-responsive">
     <table class="table table-bordered table-sm">
@@ -25,14 +26,14 @@
           <tr>
               <td scope="row">
               {% if user.is_authenticated %}<a href="{% url 'income-update' income.pk %}" style="color:red;">{% endif %} {{ income.incname }}</a></td>
-              <td>{{ income.incdate|date:"d-m-Y" }}</td>
+              <td>{{ income.incdate|date:"d/m/Y" }}</td>
               <td>{{ income.incmode }}</td>
               <td>{{ income.incamt }}</td>
               <td>{{ income.increason }}</td>
               <td>{{ income.incby }}</td>
               <td>{{ income.bankname }}</td>
               <td>{{ income.chequeordd }}</td>
-              <td>{{ income.dateinbank|date:"d-m-Y" }}</td>
+              <td>{{ income.dateinbank }}</td>
               {% if user.is_authenticated %}
               <td><a class="btn btn-danger ml-" href="{% url 'delete-income' income.pk %}" style="float: right;">Delete</a></td>
               {% endif %}

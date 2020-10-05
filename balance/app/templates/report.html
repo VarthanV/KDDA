@@ -13,24 +13,24 @@
             padding: 25px;
         }
         .header{
-            font-size: 30px;
+            font-size: 25px;
             color: black;
             text-align: center;
             padding: 5px;
         }
         .amt{
-            font-size: 30px;
+            font-size: 25px;
             color: black;
             padding:5px;
             text-align: center;
         }
         .detail{
-            font-size: 25px;
+            font-size: 20px;
             text-align: center;
             padding: 5px;
         }
         .details{
-            font-size: 25px;
+            font-size: 20px;
             text-align: center;
         }
         .heading, .address{
@@ -50,9 +50,17 @@
         .inctot,.exptot{
             font-size: 25px;
         }
+        .op{
+            text-align: center;
+            font-size: 20px;
+        }
+        .opb{
+            margin: 0 auto;
+            float: 75%;
+        }
     </style>
   </head>
-  <body>
+  <body onload="window.print()">
     <div class="container mt-3">
         <div class="title" style="font-size:40px;">Krishnagiri Dristict Deaf Association</div>
         <div class="address">KDDA Auditorium 29/1,2 Titan Township H.C.F Post, Mathigiri,Hosur-635110</div>
@@ -70,7 +78,7 @@
                     {% for tot in allincomes %}
                     <tr>
                         <td scope="row" class="detail">{{ tot.name }}</td>
-                        <td class="details">{{ tot.incamt.incamt__sum }}</td>
+                        <td class="details">{{ tot.incamt.incamt__sum|default_if_none:" "  }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -86,21 +94,20 @@
                     {% for result in allexpenses %}
                     <tr>
                         <td scope="row" class="detail">{{ result.name }}</td>
-                        <td class="details">{{ result.amount.amount__sum }}</td>
+                        <td class="details">{{ result.amount.amount__sum|default_if_none:" "  }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
-    
     <div class="container mt-5">
         <div class="row">
             <div class="col">
-                <p class="inctot" style="text-align:right;">Total Income:&#8377 {{ tot }}</p>
+                <h4 class="inctot" style="text-align:right;">Total Income:&#8377 {{ tot }}</h4>
             </div>
             <div class="col mr-5" style="text-align:right;margin-right:5px;">
-                <p class="exptot mr-5">Total Expense:&#8377 {{ extot }}</p>
+                <h4 class="exptot mr-5">Total Expense:&#8377 {{ extot }}</h4>
             </div>
         </div>
     </div>
@@ -114,7 +121,6 @@
             </div>
         </div>
     </div>
-    
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>

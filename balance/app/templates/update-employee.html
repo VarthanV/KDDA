@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container" style="margin-top:8%;">
+  <h2 class="text-center">Update Employee</h2>
+  <div class="card" style="border:3px solid darkgreen;border-radius:25px;">
+    <div class="card-body">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="form-group col-md-4 mb-3 md-form">
+            <label for="expensename">Employee Name</label>
+            <input type="text" class="form-control" id="exampleInputEmail1" value="{{empname}}" aria-describedby="emailHelp" placeholder="Enter Employee Name" name="empname" required>
+          </div>
+        </div>
+          <div class="form-row">
+            <div class="form-group col-md-4 mb-3 md-form">
+              <label for="exampleInputEmail1">Employee Desination</label>
+              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Employee Desination" name="desination" value="{{ desination }}" required>
+            </div>
+            <div class="form-group col-md-4 mb-3 md-form">
+              <label for="exampleInputEmail1">Employee  Designation in KDDA</label>
+              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Employee designation in kdda" name="desginkdda" value="{{ desginkdda }}" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-4 mb-3 md-form">
+              <label for="exampleInputEmail1">Employee Phone </label>
+              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Employee Phone" name="phone" value="{{ phone }}" required>
+            </div>
+            <div class="form-group col-md-4 mb-3 md-form">
+              <label for="exampleInputEmail1">Employee address</label>
+              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Employee Address" name="address" value="{{ address }}" required>
+            </div>
+          </div>
+        <button type="submit" class="btn btn-primary" style="float: right;">Update</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

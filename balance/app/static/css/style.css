@@ -461,3 +461,9 @@ main.l-main .page-title {
 .table-bordered{
   border: 2px solid black;
 }
+
+.dark-mode {
+  background-color: black;
+  color: white;
+}
+

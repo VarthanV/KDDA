@@ -50,27 +50,24 @@
             <label for="exampleInputEmail1">Expense Reason</label>
             <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Expense Reason" name="expreason" required autocomplete="off">
           </div>
-          <h3 class="text-center">Bank Details</h3>
-          <div class="form-row">
-            <div class="form-group col-md-4 mb-3 md-form">
-              <label for="exampleInputEmail1">Bank Name </label>
-              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Bank Name" name="bankname" autocomplete="off">
+            <h3 class="text-center">Bank Details</h3>
+            <div class="form-row">
+              <div class="form-group col-md-4 mb-3 md-form">
+                <label for="exampleInputEmail1">Bank Name </label>
+                <select class="form-control" id="exampleFormControlSelect1" name="bankname" required>
+                  <option>Canara</option>
+                  <option>None</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4 mb-3 md-form">
+                <label for="exampleInputEmail1">Checque or DD.no</label>
+                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Cheque or DD.No" name="chequeordd" autocomplete="off">
+              </div>
+              <div class="form-group col-md-4 mb-3 md-form">
+                <label for="expensedate">Date From Bank</label>
+                <input type="text" class="form-control"  placeholder="Enter Date" name="dateinbank" autocomplete="off">
+              </div>
             </div>
-            <div class="form-group col-md-4 mb-3 md-form">
-              <label for="exampleInputEmail1">Checque or DD.no</label>
-              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Cheque or DD.No" name="chequeordd" autocomplete="off">
-            </div>
-            <div class="form-group col-md-4 mb-3 md-form">
-              <label for="expensedate">Date From Bank</label>
-              <input id="datepicker" type="date" class="form-control"  placeholder="Enter Date" name="dateinbank" autocomplete="off">
-            </div>
-            <script>
-                $('#datepicker').datepicker({
-                    dateFormat: 'dd-mm-yy',
-                    uiLibrary: 'bootstrap4'
-                });
-            </script>
-          </div>
           <div class="form-group">
             <label for="exampleInputEmail1">Details </label>
             <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Details" name="detail">

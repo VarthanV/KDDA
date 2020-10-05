@@ -16,9 +16,9 @@ class Expense(models.Model):
     expby = models.CharField(max_length=50,null=True,blank=True)
     expdate = models.DateField()
     detail = models.TextField()
-    bankname = models.CharField(default='nill',max_length=50,null=True,blank=True)
+    bankname = models.CharField(default=None,max_length=50,null=True,blank=True)
     chequeordd = models.IntegerField(default=0,null=True,blank=True)
-    dateinbank = models.DateField(default='',null=True,blank=True)
+    dateinbank = models.CharField(default=None,null=True,blank=True,max_length=50)
 
     def __str__(self):
         return self.expname
@@ -31,9 +31,9 @@ class Income(models.Model):
     incamt = models.IntegerField(default=0)
     increason = models.CharField(max_length=50)
     incby = models.CharField(max_length=50)
-    bankname = models.CharField(max_length=50,null=True,blank=True)
-    chequeordd = models.IntegerField(default=0,null=True,blank=True)
-    dateinbank = models.DateField(null=True,blank=True)
+    bankname = models.CharField(max_length=50,null=True,blank=True,default=None)
+    chequeordd = models.IntegerField(default=None,null=True,blank=True)
+    dateinbank = models.CharField(null=True,blank=True,default=None,max_length=50)
 
     def __str__(self):
         return self.incname
