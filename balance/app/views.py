@@ -4,7 +4,9 @@ from .models import(
     Income,
     IncomeType,
     ExpenseType,
-    Employee
+    Employee,
+    Transaction,
+    Opening
 )
 from django.views.generic import View
 from django.contrib import messages
@@ -17,13 +19,14 @@ from django.db.models import Sum
 from django.db.models.functions import Cast
 from django.db.models import FloatField
 from django.contrib.auth import authenticate,forms
-from django.contrib.auth.models import User
-from django.db.models.query_utils import Q
+from django.http import Http404
 import csv
 import datetime
 from django.template import loader
 from django.contrib.auth import user_logged_in
 from django.core.exceptions import PermissionDenied
+from django.urls import reverse
+
 # create your views
 def home(request):
     incomes = Income.objects.all()
@@ -65,7 +68,7 @@ class IncomeView(LoginRequiredMixin,View):
     raise_exception = True
     permission_denied_message = 'You must Login Now.'
     def get(self,request,*args, **kwargs):
-        incomes = Income.objects.all()[:6]
+        incomes = Income.objects.all()
         total = 0
         for income in incomes:
             total += income.incamt
@@ -83,15 +86,9 @@ class ExpenseView(LoginRequiredMixin,View):
     permission_denied_message = 'You must Login Now.'
     def get(self,request):
         expenses = Expense.objects.all()
-        tot = 0
-        for expense in expenses:
-            tot += expense.amount
-
-        
 
         context = {
-            "expenses":expenses,
-            "tot":tot
+            "expenses":expenses
         }   
         return render(request,self.template_name ,context)
 
@@ -326,14 +323,102 @@ class EmployeeDeleteView(View):
         employe.delete()
         return redirect('employee')
 
+class AddtransactionView(View,LoginRequiredMixin):
+    template_name = 'add-transaction.html'
+    raise_exception = True
+    permission_denied_message = 'You must Login Now.'
+    def get(self,request):
+        return render(request,self.template_name)
+    def post(self,request):
+        data = request.POST
+        transaction = Transaction()
+        transaction.empid = data['bankname']
+        transaction.empname =data['mode']
+        transaction.number = data['number']
+        transaction.amt = data['amt']
+        transaction.save()
+        return redirect("transaction")
+        return render(request,self.template_name)
+
+class TransactionView(View,LoginRequiredMixin):
+    template_name ="transaction-details.html"
+    raise_exception = True
+    permission_denied_message = 'You must Login Now.'
+    def get(self,request):
+        transactions = Transaction.objects.all()
+        context = {
+            "transactions":transactions
+        }
+        return render(request,self.template_name ,context)
+
+class TransactionDeleteView(View,LoginRequiredMixin):
+    def get(self,request,pk):
+        transaction = Transaction.objects.get(pk=pk)
+        transaction.delete()
+        return redirect('transaction')
+
+class AddOpeningView(View,LoginRequiredMixin):
+    template_name = 'starting.html'
+    raise_exception = True
+    permission_denied_message = 'You must Login Now.'
+    def get(self,request):
+        return render(request,self.template_name)
+    def post(self,request):
+        data = request.POST
+        opening = Opening()
+        opening.cashinhand = data['cashinhand']
+        opening.cashatbank = data['cashatbank']
+        opening.save()
+        return render(request,self.template_name)
+
+class OpeningView(View):
+    template_name ="starting.html"
+    def get(self,request):
+        openings = Opening.objects.all()
+        context = {
+            "openings":openings
+        }
+        return render(request,self.template_name ,context)
+
+class OpeningDeleteView(View,LoginRequiredMixin):
+    def get(self,request,pk):
+        opening = Opening.objects.get(pk=pk)
+        opening.delete()
+        return redirect('home')
+
+class OpeningUpdateView(View):
+    template_name = 'opening-update.html'
+    def get(self,request,pk):
+        opening = get_object_or_404(Opening,pk=pk)
+        context = {
+            'cashinhand':opening.cashinhand,
+            'cashatbank':opening.cashatbank
+        }
+        return render(request,self.template_name,context)
+    def post(self,request,pk):
+        Opening = get_object_or_404(Opening,pk=pk)
+        data = request.POST
+        opening = Opening()
+        opening.cashinhand = data['cashinhand']
+        opening.cashatbank = data['cashatbank']
+        opening.save()
+        return render(request,self.template_name)
+
 def report(request):
     incomes = Income.objects.all()
     expenses = Expense.objects.all()
+    openings = Opening.objects.all()
+
+    r = 0
+    for opening in openings:
+        r = opening.cashinhand + opening.cashatbank
 
     tot = 0
     for income in incomes:
         tot += income.incamt
-
+    
+    fin = tot + r
+    
     extot = 0
     for expense in expenses:
         extot += expense.amount
@@ -346,11 +431,40 @@ def report(request):
     general = Expense.objects.filter(expname='General').aggregate(Sum('amount'))
     printing = Expense.objects.filter(expname='Printing').aggregate(Sum('amount'))
     bill = Expense.objects.filter(expname='Bill').aggregate(Sum('amount'))
-    cashinhand = Expense.objects.filter(expname='Cash in Hand').aggregate(Sum('amount'))
-    cashatbank = Expense.objects.filter(expname='Cash at Bank').aggregate(Sum('amount'))
     donation = Income.objects.filter(incname='Donation').aggregate(Sum('incamt'))
     rent = Income.objects.filter(incname='Rent').aggregate(Sum('incamt'))
     intrest = Income.objects.filter(incname='Intrest Collected').aggregate(Sum('incamt'))
+    sports = Income.objects.filter(incname='Sports Loan').aggregate(Sum('incamt'))
+    loan = Income.objects.filter(incname='Loan Recived').aggregate(Sum('incamt'))
+    subscription = Income.objects.filter(incname='Subscription Fees').aggregate(Sum('incamt'))
+    entry = Income.objects.filter(incname='Entry Fees').aggregate(Sum('incamt'))
+    addvertisment = Income.objects.filter(incname='Addvertisment').aggregate(Sum('incamt'))
+    commission = Income.objects.filter(incname='Commission Earned').aggregate(Sum('incamt'))
+    comman = Income.objects.filter(incname='General Income').aggregate(Sum('incamt'))
+
+    a = Expense.objects.all().filter(expmode='Cash').aggregate(Sum('amount'))
+    b = Income.objects.all().filter(incmode='Cash').aggregate(Sum('incamt'))
+
+    j = a['amount__sum']
+    i = b['incamt__sum']
+    if i is None :
+        i = 0
+    if j is None:
+        j = 0
+    cih = (i-j)
+
+    c = Expense.objects.all().filter(expmode='Cheque' or 'Demand Draft').aggregate(Sum('amount'))
+    d = Income.objects.all().filter(incmode='Cheque' or 'Demand Draft').aggregate(Sum('incamt'))
+
+    f = c['amount__sum']
+    e = d['incamt__sum']
+    if f is None:
+        f = 0
+    if e is None:
+        e = 0
+    cab = (e-f)
+
+    final = extot+cab+cih
 
     context = {
         "allexpenses":[
@@ -362,16 +476,27 @@ def report(request):
             {"name":"General","amount":general},
             {"name":"Printing","amount":printing},
             {"name":"Bill","amount":bill},
-            {"name":"Cash in Hand","amount":cashinhand},
-            {"name":"Cash at Bank","amount":cashatbank},
         ],
         "allincomes":[
             {"name":"Donation","incamt":donation},
             {"name":"Rent","incamt":rent},
             {"name":"Intrest Collected","incamt":intrest},
+            {"name":"Sports Loan","incamt":sports},
+            {"name":"Loan Recived","incamt":loan},
+            {"name":"Subscription Fees","incamt":subscription},
+            {"name":"Entry Fees","incamt":entry},
+            {"name":"Addvertisment","incamt":addvertisment},
+            {"name":"Commission Earned","incamt":commission},
+            {"name":"General Income","incamt":comman},
         ],
         "tot":tot,
-        "extot":extot
+        "extot":extot,
+        "cih":cih,
+        "cab":cab,
+        "final":final,
+        "fin":fin,
+        "openings":openings,
+        
     }
     return render(request,'report.html',context)
 
@@ -410,12 +535,31 @@ def expense_csv(request):
         writer.writerow([expense.expname,expense.expdate,expense.expmode,expense.amount,expense.expreason,expense.expby,expense.detail,expense.bankname,expense.chequeordd,expense.dateinbank])
     return response
 
-def settings(request):
-    inc = Income.objects.filter(incdate__gte=datetime.date(2020,10,1),incdate__lte=datetime.date(2020,10,30)).all()
-    context = {
-        "incs":inc
+def Incomefilter(request):
+    inc = Income.objects.filter(incdate__gte=datetime.date(2022,10,1),incdate__lte=datetime.date(2020,10,30)).all()
+    con = {
+        "incms":inc
     }
-    return render(request,'settings.html',context)
+    if request.method == 'POST':
+        maxi = request.POST.get('date_max').split('-')
+        mini = request.POST.get('date_min').split('-')
+        incm = Income.objects.filter(incdate__gte=datetime.date(int(mini[0]),int(mini[1]),int(mini[2])),incdate__lte=datetime.date(int(maxi[0]),int(maxi[1]),int(maxi[2]))).all()          
+        con = {
+            "incms":incm,
+        }
 
-def error(request):
-    return render(request,'404.html')
+    return render(request,'income-filter.html',con)
+
+def Expensefilter(request):
+    exp = Expense.objects.filter(expdate__gte=datetime.date(2022,10,1),expdate__lte=datetime.date(2020,10,30)).all()
+    con = {
+        "expms":exp
+    }
+    if request.method == 'POST':
+        maxi = request.POST.get('date_max').split('-')
+        mini = request.POST.get('date_min').split('-')
+        expm = Expense.objects.filter(expdate__gte=datetime.date(int(mini[0]),int(mini[1]),int(mini[2])),expdate__lte=datetime.date(int(maxi[0]),int(maxi[1]),int(maxi[2]))).all()          
+        con = {
+            "expms":expm,
+        }
+    return render(request,'expense-filter.html',con)

@@ -4,7 +4,9 @@ from .models import (
     Income,
     Expense,
     IncomeType,
-    ExpenseType
+    ExpenseType,
+    Transaction,
+    Opening
 )
 # Register your models here.
 admin.site.register(Employee)
@@ -12,3 +14,5 @@ admin.site.register(Income)
 admin.site.register(Expense)
 admin.site.register(IncomeType)
 admin.site.register(ExpenseType)
+admin.site.register(Transaction)
+admin.site.register(Opening)

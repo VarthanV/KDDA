@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container" style="margin-top:8%;">
+    <div class="card">
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group col-md-2 col-lg-2">
+                        <label for="viewCountMin">Starting Date</label>
+                        <input type="date" class="form-control" id="publishDateMin" name="date_min">
+                    </div>
+                    <div class="form-group col-md-2 col-lg-2">
+                        <label for="viewCountMax">Ending Date</label>
+                        <input type="date" class="form-control" id="publishDateMax" name="date_max">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container">
+  <div class="table-responsive">
+    <table class="table table-fixed" style="width:100%;">
+      <thead class="head">
+        <tr class="tr">
+          <th scope="col">Expense Name</th>
+          <th scope="col">Expense Date</th>
+          <th scope="col">Expense Mode</th>
+          <th scope="col">Amount</th>
+          <th scope="col">Reason</th>
+          <th scope="col">Expense By</th>
+          <th scope="col">Bank Name</th>
+          <th scope="col">Cheque/DD.no</th>
+          <th scope="col">Date from Bank</th>
+          <th scope="col">Details</th>
+        </tr>
+      </thead>
+      <tbody>
+          {% for expm in expms %}
+          <tr>
+              <td scope="row"> {{ expm.expname }}</td>
+              <td>{{ expm.expdate|date:"d/M/Y" }}</td>
+              <td>{{ expm.expmode }}</td>
+              <td>{{ expm.amount }}</td>
+              <td>{{ expm.expreason }}</td>
+              <td>{{ expm.expby }}</td>
+              <td>{{ expm.bankname }}</td>
+              <td>{{ expm.chequeordd }}</td>
+              <td>{{ expm.dateinbank }}</td>
+              <td>{{ expm.detail }}</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,11 +1,13 @@
+{% load static %} 
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="icon" href="{% static 'images/icon2.png' %}" type="image/gif" sizes="16x16">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <title>Report</title>
-    <style>
+    <style> 
         *{
             color: black;
         }
@@ -65,6 +67,7 @@
         <div class="title" style="font-size:40px;">Krishnagiri Dristict Deaf Association</div>
         <div class="address">KDDA Auditorium 29/1,2 Titan Township H.C.F Post, Mathigiri,Hosur-635110</div>
         <br>
+        
         <div class="topic">Recipits and Payments Accounts {{ date }}</div>
         <div class="table1 mt-4" width="100%" style="display: flex; justify-content: space-between;">
             <table width="45%" style="margin:0 auto;border-collapse: collapse;border: 1px solid black;">
@@ -75,6 +78,19 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for opening in openings %}
+                    <tr>
+                        <th scope="row" class="detail">Cash in Hand</th>
+                        <th class="details">{{ opening.cashinhand }}</th>
+                    </tr>
+                    {% endfor %}
+                    
+                    {% for opening in openings %}
+                    <tr>
+                        <th scope="row" class="detail">Cash At Bank</th>
+                        <th class="details">{{ opening.cashatbank }}</th>
+                    </tr>
+                    {% endfor %}
                     {% for tot in allincomes %}
                     <tr>
                         <td scope="row" class="detail">{{ tot.name }}</td>
@@ -97,6 +113,18 @@
                         <td class="details">{{ result.amount.amount__sum|default_if_none:" "  }}</td>
                     </tr>
                     {% endfor %}
+                    <tr>
+                        <th scope="row" class="detail">Closing Balance</th>
+                        <th class="details">{{extot}}</th>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="detail">Cash In Hand</th>
+                        <th class="details">{{cih}}</th>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="detail">Cash At Bank</th>
+                        <th class="details">{{cab}}</th>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -104,10 +132,10 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col">
-                <h4 class="inctot" style="text-align:right;">Total Income:&#8377 {{ tot }}</h4>
+                <h4 class="inctot" style="text-align:right;">Total Income:&#8377 {{ fin }}</h4>
             </div>
             <div class="col mr-5" style="text-align:right;margin-right:5px;">
-                <h4 class="exptot mr-5">Total Expense:&#8377 {{ extot }}</h4>
+                <h4 class="exptot mr-5">Total Expense:&#8377 {{ final }}</h4>
             </div>
         </div>
     </div>
@@ -121,6 +149,7 @@
             </div>
         </div>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>

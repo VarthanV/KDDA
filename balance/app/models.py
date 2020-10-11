@@ -56,3 +56,16 @@ class IncomeType(models.Model):
 class ExpenseType(models.Model):
     etypeid = models.IntegerField()
     etypename = models.CharField(max_length=50,null=True,blank=True)
+
+class Transaction(models.Model):
+    bankname = models.CharField(max_length=20,null=True,blank=True)
+    mode = models.CharField(max_length=20,blank=True, null=True)
+    number = models.IntegerField(default=0)
+    amt = models.IntegerField()
+
+    def __str__(self):
+        return self.bankname
+
+class Opening(models.Model):
+    cashinhand = models.IntegerField(blank=True,null=True)
+    cashatbank = models.IntegerField(blank=True,null=True)

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container" style="margin-top:8%">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Bank Name</th>
+                <th scope="col">Type</th>
+                <th scope="col">Cheque or DD Number</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for transaction in transactions %}
+            <tr>
+                <th>{{ transaction.bankname }}</th>
+                <td>{{ transaction.mode }}</td>
+                <td>{{ transaction.number }}</td>
+                <td>{{ transaction.amt }}</td>
+                {% if user.is_authenticated %}
+                <td><a class="btn btn-danger ml-" href="{% url 'delete-transaction' transaction.pk %}">Delete</a></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock  %}
