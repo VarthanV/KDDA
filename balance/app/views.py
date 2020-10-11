@@ -9,11 +9,9 @@ from .models import(
     Opening
 )
 from django.views.generic import View
-from django.contrib import messages
 import uuid
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponse
-from django.contrib import messages
 from django.template.loader import get_template
 from django.db.models import Sum
 from django.db.models.functions import Cast
@@ -25,8 +23,6 @@ import datetime
 from django.template import loader
 from django.contrib.auth import user_logged_in
 from django.core.exceptions import PermissionDenied
-from django.urls import reverse
-
 # create your views
 def home(request):
     incomes = Income.objects.all()
@@ -100,7 +96,6 @@ class AddincomeView(LoginRequiredMixin,View):
         context={
             'incomemode':incomemode
         }
-        messages.success(request, f'User is Active, The User can Add Income Details')
         return render(request,self.template_name,context)
     def post(self,request,incomemode):
         data = request.POST
@@ -116,7 +111,6 @@ class AddincomeView(LoginRequiredMixin,View):
         income.chequeordd = data['chequeordd']
         income.dateinbank = data['dateinbank']
         income.save()
-        messages.success(request, f'Income is added successfully!...')
         return redirect("income")
         return render(request,self.template_name)
 
@@ -144,11 +138,10 @@ class AddexpenseView(LoginRequiredMixin,View):
         expense.dateinbank = data['dateinbank']
         expense.detail = data['detail']
         expense.save()
-        messages.success(request, f'Expense is added successfully!...')
         return redirect("expense")
         return render(request,self.template_name)
 
-class AddIncomeTypeView(View,LoginRequiredMixin):
+class AddIncomeTypeView(LoginRequiredMixin,View):
     template_name = 'add-income-type.html'
     raise_exception = True
     permission_denied_message = 'You must Login Now.'
@@ -160,11 +153,10 @@ class AddIncomeTypeView(View,LoginRequiredMixin):
         incometype.typeid = data['typeid']
         incometype.typename = data['typename']
         incometype.save()
-        messages.success(request, f'Income Type is added successfully!...')
         return redirect("income-type")
         return render(request,self.template_name)
 
-class AddExpenseTypeView(View,LoginRequiredMixin):
+class AddExpenseTypeView(LoginRequiredMixin,View):
     template_name = 'add-expense-type.html'
     raise_exception = True
     permission_denied_message = 'You must Login Now.'
@@ -176,25 +168,22 @@ class AddExpenseTypeView(View,LoginRequiredMixin):
         expensetype.etypeid = data['etypeid']
         expensetype.etypename = data['etypename']
         expensetype.save()
-        messages.success(request, f'Expense Type is added successfully!...')
         return redirect("expense-type")
         return render(request,self.template_name)
 
-class ExpenseDeleteView(View,LoginRequiredMixin):
+class ExpenseDeleteView(LoginRequiredMixin,View):
     def get(self,request,pk):
         expense = Expense.objects.get(pk=pk)
         expense.delete()
-        messages.success(request, f'Expense is Deleted successfully!...')
         return redirect("expense")
 
 class IncomeDeleteView(LoginRequiredMixin,View):
     def get(self,request,pk):
         income = Income.objects.get(pk=pk)
         income.delete()
-        messages.success(request, f'Income is Deleted successfully!...')
         return redirect("income")
 
-class IncomeUpdateView(View,LoginRequiredMixin):
+class IncomeUpdateView(LoginRequiredMixin,View):
     template_name = 'update.html'
     def get(self,request,pk):
         income = get_object_or_404(Income,pk=pk)
@@ -227,7 +216,7 @@ class IncomeUpdateView(View,LoginRequiredMixin):
         return redirect('income')
         return render(request,self.template_name)  
 
-class ExpenseUpdateView(View,LoginRequiredMixin):
+class ExpenseUpdateView(LoginRequiredMixin,View):
     template_name = 'update-expense.html'
     def get(self,request,pk):
         expense = get_object_or_404(Expense,pk=pk)
@@ -261,7 +250,7 @@ class ExpenseUpdateView(View,LoginRequiredMixin):
         return redirect('expense')
         return render(request,self.template_name) 
 
-class AddEmployeView(View,LoginRequiredMixin):
+class AddEmployeView(LoginRequiredMixin,View):
     template_name = 'addemploye.html'
     raise_exception = True
     permission_denied_message = 'You must Login Now.'
@@ -280,8 +269,10 @@ class AddEmployeView(View,LoginRequiredMixin):
         return redirect("employee")
         return render(request,self.template_name)
 
-class EmployeeView(View):
+class EmployeeView(LoginRequiredMixin,View):
     template_name ="employee-detail.html"
+    raise_exception = True
+    permission_denied_message = 'You must Login Now.'
     def get(self,request):
         employees = Employee.objects.all()
         tota = 0
@@ -292,7 +283,7 @@ class EmployeeView(View):
         }
         return render(request,self.template_name ,context)
 
-class EmployeeUpdateView(View):
+class EmployeeUpdateView(LoginRequiredMixin,View):
     template_name = "update-employee.html"
     def get(self,request,pk):
         employee = get_object_or_404(Employee,pk=pk)
@@ -317,13 +308,15 @@ class EmployeeUpdateView(View):
         return redirect('employee')
         return render(request,self.template_name)
 
-class EmployeeDeleteView(View):
+class EmployeeDeleteView(LoginRequiredMixin,View):
+    raise_exception = True
+    permission_denied_message = 'You must Login Now.'
     def get(self,request,pk):
         employe = Employee.objects.get(pk=pk)
         employe.delete()
         return redirect('employee')
 
-class AddtransactionView(View,LoginRequiredMixin):
+class AddtransactionView(LoginRequiredMixin,View):
     template_name = 'add-transaction.html'
     raise_exception = True
     permission_denied_message = 'You must Login Now.'
@@ -340,7 +333,7 @@ class AddtransactionView(View,LoginRequiredMixin):
         return redirect("transaction")
         return render(request,self.template_name)
 
-class TransactionView(View,LoginRequiredMixin):
+class TransactionView(LoginRequiredMixin,View):
     template_name ="transaction-details.html"
     raise_exception = True
     permission_denied_message = 'You must Login Now.'
@@ -351,13 +344,13 @@ class TransactionView(View,LoginRequiredMixin):
         }
         return render(request,self.template_name ,context)
 
-class TransactionDeleteView(View,LoginRequiredMixin):
+class TransactionDeleteView(LoginRequiredMixin,View):
     def get(self,request,pk):
         transaction = Transaction.objects.get(pk=pk)
         transaction.delete()
         return redirect('transaction')
 
-class AddOpeningView(View,LoginRequiredMixin):
+class AddOpeningView(LoginRequiredMixin,View):
     template_name = 'starting.html'
     raise_exception = True
     permission_denied_message = 'You must Login Now.'
@@ -369,10 +362,11 @@ class AddOpeningView(View,LoginRequiredMixin):
         opening.cashinhand = data['cashinhand']
         opening.cashatbank = data['cashatbank']
         opening.save()
+        return redirect('open-details')
         return render(request,self.template_name)
 
-class OpeningView(View):
-    template_name ="starting.html"
+class OpeningView(LoginRequiredMixin,View):
+    template_name ="starting-details.html"
     def get(self,request):
         openings = Opening.objects.all()
         context = {
@@ -380,13 +374,13 @@ class OpeningView(View):
         }
         return render(request,self.template_name ,context)
 
-class OpeningDeleteView(View,LoginRequiredMixin):
+class OpeningDeleteView(LoginRequiredMixin,View):
     def get(self,request,pk):
         opening = Opening.objects.get(pk=pk)
         opening.delete()
-        return redirect('home')
+        return redirect('open-details')
 
-class OpeningUpdateView(View):
+class OpeningUpdateView(LoginRequiredMixin,View):
     template_name = 'opening-update.html'
     def get(self,request,pk):
         opening = get_object_or_404(Opening,pk=pk)
@@ -396,13 +390,13 @@ class OpeningUpdateView(View):
         }
         return render(request,self.template_name,context)
     def post(self,request,pk):
-        Opening = get_object_or_404(Opening,pk=pk)
+        opening = get_object_or_404(Opening,pk=pk)
         data = request.POST
-        opening = Opening()
         opening.cashinhand = data['cashinhand']
         opening.cashatbank = data['cashatbank']
         opening.save()
         return render(request,self.template_name)
+
 
 def report(request):
     incomes = Income.objects.all()

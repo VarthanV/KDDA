@@ -27,7 +27,7 @@
           {% for income in incomes %}
           <tr>
               <td scope="row">
-              {% if user.is_authenticated %}<a href="{% url 'income-update' income.pk %}" style="color:red;">{% endif %} {{ income.incname }}</a></td>
+              {% if user.is_authenticated %}<a href="{% url 'income-update' income.pk %}" style="color:red;">{{ income.incname }} {% endif %}</a></td>
               <td>{{ income.incdate|date:"d/m/Y" }}</td>
               <td>{{ income.incmode }}</td>
               <td>{{ income.incamt }}</td>

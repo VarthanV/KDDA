@@ -54,9 +54,14 @@
               <div class="c-menu-item__title"><span>Details</span></div>
             </div>
           </li></a>
-          <a href="{% url 'details' %}" style="text-decoration: none;color: white;"><li class="c-menu__item has-submenu" data-toggle="tooltip" title="Bank">
+          <a href="{% url 'add-transaction' %}" style="text-decoration: none;color: white;"><li class="c-menu__item has-submenu" data-toggle="tooltip" title="Bank">
             <div class="c-menu__item__inner"><i class="fa fa-bank"></i>
               <div class="c-menu-item__title"><span>Bank Transaction</span></div>
+            </div>
+          </li></a>
+          <a href="{% url 'opening' %}" style="text-decoration: none;color: white;"><li class="c-menu__item has-submenu" data-toggle="tooltip" title="Bank">
+            <div class="c-menu__item__inner"><i class="fa fa-pencil"></i>
+              <div class="c-menu-item__title"><span>Opening Details</span></div>
             </div>
           </li></a>
           <a href="{% url 'report' %}" style="text-decoration: none;color: white;"><li class="c-menu__item has-submenu" data-toggle="tooltip" title="Print Report">

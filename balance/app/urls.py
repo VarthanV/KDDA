@@ -20,7 +20,8 @@ from .views import (
     TransactionDeleteView,
     AddOpeningView,
     OpeningView,
-    OpeningDeleteView
+    OpeningDeleteView,
+    OpeningUpdateView
 )
 
 urlpatterns = [
@@ -54,6 +55,7 @@ urlpatterns = [
     path('income/<int:pk>/update/', views.IncomeUpdateView.as_view(), name='income-update'),
     path('expense/<int:pk>/update/', views.ExpenseUpdateView.as_view(), name='expense-update'),
     path('employee/<int:pk>/update/', views.EmployeeUpdateView.as_view(), name='employee-update'),
+    path('opening/<int:pk>/update/', views.OpeningUpdateView.as_view(), name='opening-update'),
 
     path('report/',views.report,name="report"),
 

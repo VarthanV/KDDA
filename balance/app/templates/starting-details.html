@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container" style="margin-top:8%">
+  <div class="table-responsive">
+    <table class="table table-fixed" style="width:100%;">
+      <thead class="head">
+        <tr class="tr">
+            <th scope="col">Cash in Hand</th>
+            <th scope="col">Cash at Bank</th>
+            <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+          {% for opening in openings %}
+            <tr>
+                <td>
+                {% if user.is_authenticated %}<a href="{% url 'opening-update' opening.pk %}" style="color:red;">{{ opening.cashinhand }}{% endif %}</a></td>
+                <td>{{ opening.cashatbank }}</td>
+                {% if user.is_authenticated %}
+                <td><a class="btn btn-danger ml-" href="{% url 'delete-opening' opening.pk %}">Delete</a></td>
+                {% endif %}
+            </tr>
+          {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
