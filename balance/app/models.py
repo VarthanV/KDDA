@@ -60,8 +60,8 @@ class ExpenseType(models.Model):
 class Transaction(models.Model):
     bankname = models.CharField(max_length=20,null=True,blank=True)
     mode = models.CharField(max_length=20,blank=True, null=True)
-    number = models.IntegerField(default=0)
     amt = models.IntegerField()
+    account_head = models.CharField(max_length=20,blank=True, null=True)
 
     def __str__(self):
         return self.bankname
@@ -69,3 +69,4 @@ class Transaction(models.Model):
 class Opening(models.Model):
     cashinhand = models.IntegerField(blank=True,null=True)
     cashatbank = models.IntegerField(blank=True,null=True)
+    

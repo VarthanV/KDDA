@@ -64,4 +64,6 @@ urlpatterns = [
 
     path('income-filter/',views.Incomefilter,name='income-filter'),
     path('expense-filter/',views.Expensefilter,name='expense-filter'),
+
+    path('error/',views.error,name='error'),
 ]

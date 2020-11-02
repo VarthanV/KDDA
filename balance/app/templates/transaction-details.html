@@ -6,9 +6,9 @@
         <thead>
             <tr>
                 <th scope="col">Bank Name</th>
-                <th scope="col">Type</th>
-                <th scope="col">Cheque or DD Number</th>
+                <th scope="col">Withdrawal or Deposite</th>
                 <th scope="col">Amount</th>
+                <th scope="col">Account Head</th>
                 <th scope="col">Action</th>
             </tr>
         </thead>
@@ -20,6 +20,7 @@
                 <td>{{ transaction.mode }}</td>
                 <td>{{ transaction.number }}</td>
                 <td>{{ transaction.amt }}</td>
+                <td>{{transaction.account_head}}
                 {% if user.is_authenticated %}
                 <td><a class="btn btn-danger ml-" href="{% url 'delete-transaction' transaction.pk %}">Delete</a></td>
                 {% endif %}

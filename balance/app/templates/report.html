@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="icon" href="{% static 'images/icon2.png' %}" type="image/gif" sizes="16x16">
+    <link rel="icon" href="{% static 'images/icon2.png' %}" type="image/gif" sizes="16x16">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <title>Report</title>
     <style> 
@@ -110,7 +110,7 @@
                     {% for result in allexpenses %}
                     <tr>
                         <td scope="row" class="detail">{{ result.name }}</td>
-                        <td class="details">{{ result.amount.amount__sum|default_if_none:" "  }}</td>
+                        <td class="details">{{ result.amount.amount__sum|default_if_none:" " }}</td>
                     </tr>
                     {% endfor %}
                     <tr>
@@ -123,19 +123,20 @@
                     </tr>
                     <tr>
                         <th scope="row" class="detail">Cash At Bank</th>
-                        <th class="details">{{cab}}</th>
+                        <th class="details">{{y}}</th>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
+    {{q}}
     <div class="container mt-5">
         <div class="row">
             <div class="col">
                 <h4 class="inctot" style="text-align:right;">Total Income:&#8377 {{ fin }}</h4>
             </div>
             <div class="col mr-5" style="text-align:right;margin-right:5px;">
-                <h4 class="exptot mr-5">Total Expense:&#8377 {{ final }}</h4>
+                <h4 class="exptot mr-5">Total Expense:&#8377 {{ finexp }}</h4>
             </div>
         </div>
     </div>

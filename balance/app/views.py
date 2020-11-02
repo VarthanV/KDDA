@@ -10,7 +10,7 @@ from .models import(
 )
 from django.views.generic import View
 import uuid
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.template.loader import get_template
 from django.db.models import Sum
@@ -59,34 +59,36 @@ def details(request):
     return render(request,'details.html',context)
     
 # income view 
-class IncomeView(LoginRequiredMixin,View):
+class IncomeView(View):
     template_name = "income.html"
-    raise_exception = True
-    permission_denied_message = 'You must Login Now.'
     def get(self,request,*args, **kwargs):
-        incomes = Income.objects.all()
-        total = 0
-        for income in incomes:
-            total += income.incamt
+        if request.user.is_authenticated:
+            incomes = Income.objects.all()
+            total = 0
+            for income in incomes:
+                total += income.incamt
 
-        context = { 
-            "incomes":incomes,
-            "total":total
-        }
-        return render(request,self.template_name ,context)
+            context = { 
+                "incomes":incomes,
+                "total":total
+            }
+            return render(request,self.template_name ,context)
+        else:
+            return redirect("error")
 
 # expense view
-class ExpenseView(LoginRequiredMixin,View):
+class ExpenseView(View):
     template_name ="expense.html"
-    raise_exception = True
-    permission_denied_message = 'You must Login Now.'
     def get(self,request):
-        expenses = Expense.objects.all()
+        if request.user.is_authenticated:
+            expenses = Expense.objects.all()
 
-        context = {
-            "expenses":expenses
-        }   
-        return render(request,self.template_name ,context)
+            context = {
+                "expenses":expenses
+            }   
+            return render(request,self.template_name ,context)
+        else:
+            return redirect("error")
 
 class AddincomeView(LoginRequiredMixin,View):
     template_name = 'addincome.html'
@@ -269,19 +271,20 @@ class AddEmployeView(LoginRequiredMixin,View):
         return redirect("employee")
         return render(request,self.template_name)
 
-class EmployeeView(LoginRequiredMixin,View):
+class EmployeeView(View):
     template_name ="employee-detail.html"
-    raise_exception = True
-    permission_denied_message = 'You must Login Now.'
     def get(self,request):
-        employees = Employee.objects.all()
-        tota = 0
-        for employee in employees:
-            tota += employee.empid
-        context = {
-            "employees":employees
-        }
-        return render(request,self.template_name ,context)
+        if request.user.is_authenticated:
+            employees = Employee.objects.all()
+            tota = 0
+            for employee in employees:
+                tota += employee.empid
+            context = {
+                "employees":employees
+            }
+            return render(request,self.template_name ,context)
+        else:
+            return redirect("error")
 
 class EmployeeUpdateView(LoginRequiredMixin,View):
     template_name = "update-employee.html"
@@ -316,33 +319,37 @@ class EmployeeDeleteView(LoginRequiredMixin,View):
         employe.delete()
         return redirect('employee')
 
-class AddtransactionView(LoginRequiredMixin,View):
+class AddtransactionView(View):
     template_name = 'add-transaction.html'
     raise_exception = True
     permission_denied_message = 'You must Login Now.'
     def get(self,request):
-        return render(request,self.template_name)
+        if request.user.is_authenticated:
+            return render(request,self.template_name)
+        else:
+            return redirect("error")
     def post(self,request):
         data = request.POST
         transaction = Transaction()
-        transaction.empid = data['bankname']
-        transaction.empname =data['mode']
-        transaction.number = data['number']
+        transaction.bankname = data['bankname']
+        transaction.mode =data['mode']
+        transaction.account_head = data['account_head']
         transaction.amt = data['amt']
         transaction.save()
         return redirect("transaction")
         return render(request,self.template_name)
 
-class TransactionView(LoginRequiredMixin,View):
+class TransactionView(View):
     template_name ="transaction-details.html"
-    raise_exception = True
-    permission_denied_message = 'You must Login Now.'
     def get(self,request):
-        transactions = Transaction.objects.all()
-        context = {
-            "transactions":transactions
-        }
-        return render(request,self.template_name ,context)
+        if request.user.is_authenticated:
+            transactions = Transaction.objects.all()
+            context = {
+                "transactions":transactions
+            }
+            return render(request,self.template_name ,context)
+        else:
+            return redirect("error")
 
 class TransactionDeleteView(LoginRequiredMixin,View):
     def get(self,request,pk):
@@ -364,6 +371,7 @@ class AddOpeningView(LoginRequiredMixin,View):
         opening.save()
         return redirect('open-details')
         return render(request,self.template_name)
+     
 
 class OpeningView(LoginRequiredMixin,View):
     template_name ="starting-details.html"
@@ -397,102 +405,86 @@ class OpeningUpdateView(LoginRequiredMixin,View):
         opening.save()
         return render(request,self.template_name)
 
-
 def report(request):
-    incomes = Income.objects.all()
-    expenses = Expense.objects.all()
-    openings = Opening.objects.all()
+    if request.user.is_authenticated:
+        incomes = Income.objects.all()
+        expenses = Expense.objects.all()
+        openings = Opening.objects.all()
 
-    r = 0
-    for opening in openings:
-        r = opening.cashinhand + opening.cashatbank
+        tot = 0
+        for income in incomes:
+            tot += income.incamt
 
-    tot = 0
-    for income in incomes:
-        tot += income.incamt
-    
-    fin = tot + r
-    
-    extot = 0
-    for expense in expenses:
-        extot += expense.amount
-
-    travel = Expense.objects.filter(expname='Travel').aggregate(Sum('amount')) 
-    meeting = Expense.objects.filter(expname='Meeting').aggregate(Sum('amount'))
-    auditfees = Expense.objects.filter(expname='Audit Fees').aggregate(Sum('amount'))
-    bankcharges = Expense.objects.filter(expname='Bankcharges').aggregate(Sum('amount'))
-    servicecharges = Expense.objects.filter(expname='Servicecharges').aggregate(Sum('amount'))
-    general = Expense.objects.filter(expname='General').aggregate(Sum('amount'))
-    printing = Expense.objects.filter(expname='Printing').aggregate(Sum('amount'))
-    bill = Expense.objects.filter(expname='Bill').aggregate(Sum('amount'))
-    donation = Income.objects.filter(incname='Donation').aggregate(Sum('incamt'))
-    rent = Income.objects.filter(incname='Rent').aggregate(Sum('incamt'))
-    intrest = Income.objects.filter(incname='Intrest Collected').aggregate(Sum('incamt'))
-    sports = Income.objects.filter(incname='Sports Loan').aggregate(Sum('incamt'))
-    loan = Income.objects.filter(incname='Loan Recived').aggregate(Sum('incamt'))
-    subscription = Income.objects.filter(incname='Subscription Fees').aggregate(Sum('incamt'))
-    entry = Income.objects.filter(incname='Entry Fees').aggregate(Sum('incamt'))
-    addvertisment = Income.objects.filter(incname='Addvertisment').aggregate(Sum('incamt'))
-    commission = Income.objects.filter(incname='Commission Earned').aggregate(Sum('incamt'))
-    comman = Income.objects.filter(incname='General Income').aggregate(Sum('incamt'))
-
-    a = Expense.objects.all().filter(expmode='Cash').aggregate(Sum('amount'))
-    b = Income.objects.all().filter(incmode='Cash').aggregate(Sum('incamt'))
-
-    j = a['amount__sum']
-    i = b['incamt__sum']
-    if i is None :
-        i = 0
-    if j is None:
-        j = 0
-    cih = (i-j)
-
-    c = Expense.objects.all().filter(expmode='Cheque' or 'Demand Draft').aggregate(Sum('amount'))
-    d = Income.objects.all().filter(incmode='Cheque' or 'Demand Draft').aggregate(Sum('incamt'))
-
-    f = c['amount__sum']
-    e = d['incamt__sum']
-    if f is None:
-        f = 0
-    if e is None:
-        e = 0
-    cab = (e-f)
-
-    final = extot+cab+cih
-
-    context = {
-        "allexpenses":[
-            {"name":"Travel","amount":travel},
-            {"name":"Meeting","amount":meeting},
-            {"name":"Audit Fees","amount":auditfees},
-            {"name":"Bankcharges","amount":bankcharges},
-            {"name":"Servicecharges","amount":servicecharges},
-            {"name":"General","amount":general},
-            {"name":"Printing","amount":printing},
-            {"name":"Bill","amount":bill},
-        ],
-        "allincomes":[
-            {"name":"Donation","incamt":donation},
-            {"name":"Rent","incamt":rent},
-            {"name":"Intrest Collected","incamt":intrest},
-            {"name":"Sports Loan","incamt":sports},
-            {"name":"Loan Recived","incamt":loan},
-            {"name":"Subscription Fees","incamt":subscription},
-            {"name":"Entry Fees","incamt":entry},
-            {"name":"Addvertisment","incamt":addvertisment},
-            {"name":"Commission Earned","incamt":commission},
-            {"name":"General Income","incamt":comman},
-        ],
-        "tot":tot,
-        "extot":extot,
-        "cih":cih,
-        "cab":cab,
-        "final":final,
-        "fin":fin,
-        "openings":openings,
+        amt = 0
+        for opening in openings:
+            amt = opening.cashinhand + opening.cashatbank
+            x = tot+opening.cashatbank
         
-    }
-    return render(request,'report.html',context)
+        fin = amt+tot
+
+        extot = 0
+        for expense in expenses:
+            extot += expense.amount
+            y = x-extot
+         
+        cih = fin-(extot+y)
+        
+        finexp =  cih+y+extot
+        
+
+        travel = Expense.objects.filter(expname='Travel').aggregate(Sum('amount')) 
+        meeting = Expense.objects.filter(expname='Meeting').aggregate(Sum('amount'))
+        auditfees = Expense.objects.filter(expname='Audit Fees').aggregate(Sum('amount'))
+        bankcharges = Expense.objects.filter(expname='Bankcharges').aggregate(Sum('amount'))
+        servicecharges = Expense.objects.filter(expname='Servicecharges').aggregate(Sum('amount'))
+        general = Expense.objects.filter(expname='General').aggregate(Sum('amount'))
+        printing = Expense.objects.filter(expname='Printing').aggregate(Sum('amount'))
+        bill = Expense.objects.filter(expname='Bill').aggregate(Sum('amount'))
+        donation = Income.objects.filter(incname='Donation').aggregate(Sum('incamt'))
+        rent = Income.objects.filter(incname='Rent').aggregate(Sum('incamt'))
+        intrest = Income.objects.filter(incname='Intrest Collected').aggregate(Sum('incamt'))
+        sports = Income.objects.filter(incname='Sports Loan').aggregate(Sum('incamt'))
+        loan = Income.objects.filter(incname='Loan Recived').aggregate(Sum('incamt'))
+        subscription = Income.objects.filter(incname='Subscription Fees').aggregate(Sum('incamt'))
+        entry = Income.objects.filter(incname='Entry Fees').aggregate(Sum('incamt'))
+        addvertisment = Income.objects.filter(incname='Addvertisment').aggregate(Sum('incamt'))
+        commission = Income.objects.filter(incname='Commission Earned').aggregate(Sum('incamt'))
+        comman = Income.objects.filter(incname='General Income').aggregate(Sum('incamt'))
+
+        context = {
+            "allexpenses":[
+                {"name":"Travel","amount":travel},
+                {"name":"Meeting","amount":meeting},
+                {"name":"Audit Fees","amount":auditfees},
+                {"name":"Bankcharges","amount":bankcharges},
+                {"name":"Servicecharges","amount":servicecharges},
+                {"name":"General","amount":general},
+                {"name":"Printing","amount":printing},
+                {"name":"Bill","amount":bill},
+            ],
+            "allincomes":[
+                {"name":"Donation","incamt":donation},
+                {"name":"Rent","incamt":rent},
+                {"name":"Intrest Collected","incamt":intrest},
+                {"name":"Sports Loan","incamt":sports},
+                {"name":"Loan Recived","incamt":loan},
+                {"name":"Subscription Fees","incamt":subscription},
+                {"name":"Entry Fees","incamt":entry},
+                {"name":"Addvertisment","incamt":addvertisment},
+                {"name":"Commission Earned","incamt":commission},
+                {"name":"General Income","incamt":comman},
+            ],
+            "tot":tot,#all income tot
+            "extot":extot,# all exp tot or closing balance
+            "openings":openings,
+            "fin":fin,# final income
+            "y":y,# cash at bank
+            "cih":cih,# cash in hand
+            "finexp":finexp# final expense 
+        }
+        return render(request,'report.html',context)
+    else:
+        return redirect("error")
 
 def addexpensetype(request):
     return render(request,'add-expense-type.html')
@@ -541,7 +533,6 @@ def Incomefilter(request):
         con = {
             "incms":incm,
         }
-
     return render(request,'income-filter.html',con)
 
 def Expensefilter(request):
@@ -557,3 +548,12 @@ def Expensefilter(request):
             "expms":expm,
         }
     return render(request,'expense-filter.html',con)
+
+def error(request):
+    return render(request,'404error.html')
+
+#cih = cash in hand 
+#y = cash at bank
+# extot = closing blanace
+# tot = all income total
+# to find Total Expense
