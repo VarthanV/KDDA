@@ -368,6 +368,7 @@ class AddOpeningView(LoginRequiredMixin,View):
         opening = Opening()
         opening.cashinhand = data['cashinhand']
         opening.cashatbank = data['cashatbank']
+        opening.cashatbankexp = data['cashatbankexp']
         opening.save()
         return redirect('open-details')
         return render(request,self.template_name)
@@ -394,7 +395,8 @@ class OpeningUpdateView(LoginRequiredMixin,View):
         opening = get_object_or_404(Opening,pk=pk)
         context = {
             'cashinhand':opening.cashinhand,
-            'cashatbank':opening.cashatbank
+            'cashatbank':opening.cashatbank,
+            'cashatbankexp':opening.cashatbankexp
         }
         return render(request,self.template_name,context)
     def post(self,request,pk):
@@ -402,7 +404,9 @@ class OpeningUpdateView(LoginRequiredMixin,View):
         data = request.POST
         opening.cashinhand = data['cashinhand']
         opening.cashatbank = data['cashatbank']
+        opening.cashatbankexp = data['cashatbankexp']
         opening.save()
+        return redirect('open-details')
         return render(request,self.template_name)
 
 def report(request):
@@ -418,10 +422,10 @@ def report(request):
         amt = 0
         for opening in openings:
             amt = opening.cashinhand + opening.cashatbank
-            x = tot+opening.cashatbank
-        
+            #x = tot+opening.cashatbank
+            
         fin = amt+tot
-
+        '''
         extot = 0
         for expense in expenses:
             extot += expense.amount
@@ -430,7 +434,17 @@ def report(request):
         cih = fin-(extot+y)
         
         finexp =  cih+y+extot
-        
+        '''
+        extot = 0
+        a=0
+        for expense in expenses:
+            extot += expense.amount
+            a=fin-extot
+
+        for opening in openings:
+            b=a-opening.cashatbankexp
+
+        finexp = extot+a
 
         travel = Expense.objects.filter(expname='Travel').aggregate(Sum('amount')) 
         meeting = Expense.objects.filter(expname='Meeting').aggregate(Sum('amount'))
@@ -478,9 +492,11 @@ def report(request):
             "extot":extot,# all exp tot or closing balance
             "openings":openings,
             "fin":fin,# final income
-            "y":y,# cash at bank
-            "cih":cih,# cash in hand
-            "finexp":finexp# final expense 
+            #"y":y, cash at bank
+            #"cih":cih, cash in hand
+            #"finexp":finexp final expense 
+            "b":b,
+            "finexp":finexp
         }
         return render(request,'report.html',context)
     else:
@@ -552,8 +568,11 @@ def Expensefilter(request):
 def error(request):
     return render(request,'404error.html')
 
+def voucher(request):
+    return render(request,'voucher.html')
+
 #cih = cash in hand 
 #y = cash at bank
 # extot = closing blanace
 # tot = all income total
-# to find Total Expense
+# to find Total 

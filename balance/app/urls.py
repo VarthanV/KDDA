@@ -66,4 +66,5 @@ urlpatterns = [
     path('expense-filter/',views.Expensefilter,name='expense-filter'),
 
     path('error/',views.error,name='error'),
+    path('voucher/',views.voucher,name='voucher'),
 ]

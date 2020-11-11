@@ -1,33 +1,61 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container" style="margin-top:8%;">
+<style>
+table {
+	border-collapse: collapse;
+	width: 1350px;
+	table-layout: fixed;
+	margin-right:10%;
+}
+td,th {
+	padding: 5px;
+	min-width: 130px;
+	border-right: 1px solid #ccc
+}
+thead tr {
+	background:#fff;
+	color: black;
+	display: block;
+	position: relative;
+}
+tbody {
+	display: block;
+	height: 500px;
+	width: 100%;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+.tab{
+	margin-left:9%
+}
+</style>
+<div class="tab" style="margin-top:8%;">
   <a class="btn btn-warning" href="{% url 'expense-csv' %}">Download</a>
   <a href="{% url 'add-expense' expensemode='nothing' %}" class="btn btn-success" style="color:white;text-decoration:none;">ADD EXPENSE</a>
   <h2 class="text-center">ALL EXPENSE DETAILS</h2>
-  <a href="{% url 'expense-filter' %}" style="text-decoration:none;color:black"><i class="fa fa-search fa-2x" aria-hidden="true" style="float:right"></i></a>
-  <div class="table-responsive">
-    <table class="table table-fixed" style="width:100%;">
-      <thead class="head">
+  <a href="{% url 'expense-filter' %}" style="text-decoration:none;color:black;float:right;font-size:25px;margin-right:8%">Date Search<i class="fa fa-search" aria-hidden="true" style="float:right"></i></a>
+  <br><br>
+    <table>
+      <thead>
         <tr class="tr">
-          <th scope="col">Expense Name</th>
-          <th scope="col">Expense Date</th>
-          <th scope="col">Expense Mode</th>
-          <th scope="col">Amount</th>
-          <th scope="col">Reason</th>
-          <th scope="col">Expense By</th>
-          <th scope="col">Bank Name</th>
-          <th scope="col">Cheque/DD.no</th>
-          <th scope="col">Date from Bank</th>
-          <th scope="col">Details</th>
+          <th>Expense Name</th>
+          <th>Expense Date</th>
+          <th>Expense Mode</th>
+          <th>Amount</th>
+          <th>Reason</th>
+          <th>Expense By</th>
+          <th>Bank Name</th>
+          <th>Cheque/DD.no</th>
+          <th>Date from Bank</th>
           {% if user.is_authenticated %}
-          <th scope="col">Actions</th>
+          <th>Actions</th>
           {% endif %}
         </tr>
       </thead>
       <tbody>
           {% for expense in expenses %}
           <tr>
-              <td scope="row">
+              <td>
                 {% if user.is_authenticated %}
                 <a href="{% url 'expense-update' expense.pk %}" style="text-decoration:none;color:red;">{% endif %} {{ expense.expname }}</a>
               </td>
@@ -39,7 +67,6 @@
               <td>{{ expense.bankname }}</td>
               <td>{{ expense.chequeordd }}</td>
               <td>{{ expense.dateinbank }}</td>
-              <td>{{ expense.detail }}</td>
               {% if user.is_authenticated %}
               <td><a class="btn btn-danger" href="{% url 'delete-expense' expense.pk %}">Delete</a></td>
               {% endif %}
@@ -47,6 +74,5 @@
           {% endfor %}
       </tbody>
     </table>
-  </div>
 </div>
 {% endblock %}

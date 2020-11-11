@@ -69,4 +69,5 @@ class Transaction(models.Model):
 class Opening(models.Model):
     cashinhand = models.IntegerField(blank=True,null=True)
     cashatbank = models.IntegerField(blank=True,null=True)
+    cashatbankexp = models.IntegerField(blank=True,null=True)
     

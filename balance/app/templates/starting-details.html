@@ -7,6 +7,7 @@
         <tr class="tr">
             <th scope="col">Cash in Hand</th>
             <th scope="col">Cash at Bank</th>
+            <th scope="col">Cash at Bank 1</th>
             <th scope="col">Actions</th>
         </tr>
       </thead>
@@ -16,6 +17,7 @@
                 <td>
                 {% if user.is_authenticated %}<a href="{% url 'opening-update' opening.pk %}" style="color:red;">{{ opening.cashinhand }}{% endif %}</a></td>
                 <td>{{ opening.cashatbank }}</td>
+                <td>{{ opening.cashatbankexp }}</td>
                 {% if user.is_authenticated %}
                 <td><a class="btn btn-danger ml-" href="{% url 'delete-opening' opening.pk %}">Delete</a></td>
                 {% endif %}

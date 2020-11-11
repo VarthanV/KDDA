@@ -119,12 +119,14 @@
                     </tr>
                     <tr>
                         <th scope="row" class="detail">Cash In Hand</th>
-                        <th class="details">{{cih}}</th>
+                        <th class="details">{{b}}</th>
                     </tr>
+                    {% for opening in openings %}
                     <tr>
                         <th scope="row" class="detail">Cash At Bank</th>
-                        <th class="details">{{y}}</th>
+                        <th class="details">{{opening.cashatbankexp}}</th>
                     </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
