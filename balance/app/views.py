@@ -23,6 +23,7 @@ import datetime
 from django.template import loader
 from django.contrib.auth import user_logged_in
 from django.core.exceptions import PermissionDenied
+from datetime import date
 # create your views
 def home(request):
     incomes = Income.objects.all()
@@ -445,6 +446,7 @@ def report(request):
             b=a-opening.cashatbankexp
 
         finexp = extot+a
+        date = datetime.date.today()
 
         travel = Expense.objects.filter(expname='Travel').aggregate(Sum('amount')) 
         meeting = Expense.objects.filter(expname='Meeting').aggregate(Sum('amount'))
@@ -496,7 +498,8 @@ def report(request):
             #"cih":cih, cash in hand
             #"finexp":finexp final expense 
             "b":b,
-            "finexp":finexp
+            "finexp":finexp,
+            "date":date
         }
         return render(request,'report.html',context)
     else:
