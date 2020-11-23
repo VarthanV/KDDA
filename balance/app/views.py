@@ -456,6 +456,17 @@ def report(request):
         general = Expense.objects.filter(expname='General').aggregate(Sum('amount'))
         printing = Expense.objects.filter(expname='Printing').aggregate(Sum('amount'))
         bill = Expense.objects.filter(expname='Bill').aggregate(Sum('amount'))
+        post = Expense.objects.filter(expname='Post & Telegram').aggregate(Sum('amount'))
+        donation1 = Expense.objects.filter(expname='Donation').aggregate(Sum('amount'))
+        kddtloan = Expense.objects.filter(expname='KDDT Loan').aggregate(Sum('amount'))
+        entrance = Expense.objects.filter(expname='Entrance Fees').aggregate(Sum('amount'))
+        expadvertisment = Expense.objects.filter(expname='Addvertisment').aggregate(Sum('amount'))
+        bankintrest = Expense.objects.filter(expname='Bank Intrest').aggregate(Sum('amount'))
+        register = Expense.objects.filter(expname='Registration Fees').aggregate(Sum('amount'))
+        donationkddt = Expense.objects.filter(expname='Donation KDDT').aggregate(Sum('amount'))
+        tnstatefees = Expense.objects.filter(expname='Tamil Nadu State Fees').aggregate(Sum('amount'))
+
+
         donation = Income.objects.filter(incname='Donation').aggregate(Sum('incamt'))
         rent = Income.objects.filter(incname='Rent').aggregate(Sum('incamt'))
         intrest = Income.objects.filter(incname='Intrest Collected').aggregate(Sum('incamt'))
@@ -466,6 +477,10 @@ def report(request):
         addvertisment = Income.objects.filter(incname='Addvertisment').aggregate(Sum('incamt'))
         commission = Income.objects.filter(incname='Commission Earned').aggregate(Sum('incamt'))
         comman = Income.objects.filter(incname='General Income').aggregate(Sum('incamt'))
+        returnloan = Income.objects.filter(incname='Loan Returned').aggregate(Sum('incamt'))
+        newlife = Income.objects.filter(incname='New Life Member').aggregate(Sum('incamt'))
+        advertisment = Income.objects.filter(incname='Advertisment Donation').aggregate(Sum('incamt'))
+
 
         context = {
             "allexpenses":[
@@ -477,6 +492,15 @@ def report(request):
                 {"name":"General","amount":general},
                 {"name":"Printing","amount":printing},
                 {"name":"Bill","amount":bill},
+                {"name":"Post & Telegram","amount":post},
+                {"name":"Donation","amount":donation1},
+                {"name":"KDDT Loan","amount":kddtloan},
+                {"name":"Entrance Fees","amount":entrance},
+                {"name":"Registration Fees","amount":register},
+                {"name":"Donation KDDT","amount":donationkddt},
+                {"name":"Addvertisment","amount":expadvertisment},
+                {"name":"Bank Intrest","amount":bankintrest},
+                {"name":"Tamil Nadu State Fees","amount":tnstatefees},
             ],
             "allincomes":[
                 {"name":"Donation","incamt":donation},
@@ -489,6 +513,9 @@ def report(request):
                 {"name":"Addvertisment","incamt":addvertisment},
                 {"name":"Commission Earned","incamt":commission},
                 {"name":"General Income","incamt":comman},
+                {"name":"Loan Returned","incamt":returnloan},
+                {"name":"New Life Member","incamt":newlife},
+                {"name":"Advertisment","incamt":advertisment},
             ],
             "tot":tot,#all income tot
             "extot":extot,# all exp tot or closing balance
