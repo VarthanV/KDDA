@@ -442,6 +442,7 @@ def report(request):
             extot += expense.amount
             a=fin-extot
 
+        b=0
         for opening in openings:
             b=a-opening.cashatbankexp
 
