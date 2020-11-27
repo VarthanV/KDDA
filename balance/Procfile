@@ -1,0 +1,1 @@
+web: gunicorn balance.wsgi --log-file -
